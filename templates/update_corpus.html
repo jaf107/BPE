@@ -22,7 +22,7 @@ endblock %} {% block content %}
     </button>
     <button
       id="update-corpus-button"
-      class="btn btn-primary"
+      class="btn btn-success"
       onclick="updateCorpus()"
     >
       Update Corpus
@@ -38,6 +38,14 @@ endblock %} {% block content %}
         placeholder="Enter corpus here..."
         rows="15"
       ></textarea>
+      <button
+        class="btn btn-primary mt-1"
+        data-toggle="modal"
+        data-target="#fileUploadModal"
+        onclick="toggleFileUploadModal()"
+      >
+        Upload File
+      </button>
     </div>
   </div>
 </div>
@@ -45,6 +53,50 @@ endblock %} {% block content %}
 <footer class="bg-dark text-white text-center py-3 mt-4">
   &copy; 2023 BPE Playground. All rights reserved.
 </footer>
+
+<!-- File Upload Modal -->
+<div class="modal" id="fileUploadModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Upload Corpus File</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          onclick="toggleFileUploadModal()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- File input -->
+        <label for="fileInput">Choose a file:</label>
+        <input
+          type="file"
+          class="form-control-file"
+          id="fileInput"
+          accept=".txt"
+        />
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-dismiss="modal"
+          onclick="toggleFileUploadModal()"
+        >
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" onclick="uploadFile()">
+          Upload
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Corpus Modal -->
 <div class="modal" id="corpusModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
@@ -134,69 +186,98 @@ endblock %} {% block content %}
       </div>
     </div>
   </div>
-
-  <script>
-    function toggleCorpusModal() {
-      $("#corpusModal").modal("toggle");
-    }
-
-    function toggleSuccessModal() {
-      $("#successModal").modal("toggle");
-    }
-
-    function toggleErrorModal() {
-      $("#errorModal").modal("toggle");
-    }
-    function getCorpus() {
-      fetch("/get_corpus", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.original_text) {
-            $("#corpusModalBody").text(data.original_text);
-            toggleCorpusModal();
-          } else {
-            toggleErrorModal();
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          toggleErrorModal();
-        });
-    }
-    function updateCorpus() {
-      var corpus = document.getElementById("editor").value;
-
-      if (!corpus.trim()) {
-        toggleErrorModal();
-
-        return;
-      }
-
-      fetch("/update_corpus_action", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ corpus: corpus }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.message) {
-            toggleSuccessModal();
-          } else {
-            toggleErrorModal();
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          toggleErrorModal();
-        });
-    }
-  </script>
-  {% endblock %}
 </div>
+<script>
+  function toggleCorpusModal() {
+    $("#corpusModal").modal("toggle");
+  }
+
+  function toggleSuccessModal() {
+    $("#successModal").modal("toggle");
+  }
+
+  function toggleErrorModal() {
+    $("#errorModal").modal("toggle");
+  }
+  function toggleFileUploadModal() {
+    $("#fileUploadModal").modal("toggle");
+  }
+
+  function uploadFile() {
+    // Handle file upload logic here
+    var fileInput = document.getElementById("fileInput");
+    var file = fileInput.files[0];
+
+    // Example: You can use the Fetch API to send the file to the server
+    var formData = new FormData();
+    formData.append("file", file);
+
+    fetch("/upload_file", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the server response as needed
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+    // Close the modal after uploading
+    $("#fileUploadModal").modal("hide");
+  }
+
+  function getCorpus() {
+    fetch("/get_corpus", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.original_text) {
+          $("#corpusModalBody").text(data.original_text);
+          toggleCorpusModal();
+        } else {
+          toggleErrorModal();
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        toggleErrorModal();
+      });
+  }
+  function updateCorpus() {
+    var corpus = document.getElementById("editor").value;
+
+    if (!corpus.trim()) {
+      toggleErrorModal();
+
+      return;
+    }
+
+    fetch("/update_corpus_action", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ corpus: corpus }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          toggleSuccessModal();
+        } else {
+          toggleErrorModal();
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        toggleErrorModal();
+      });
+  }
+</script>
+{% endblock %}

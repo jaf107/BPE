@@ -49,5 +49,22 @@ def get_corpus_text():
     return jsonify({'original_text': corpus_text['original_text']}), 200
 
 
+@app.route('/upload_file', methods=['POST'])
+def upload_file():
+    try:
+        uploaded_file = request.files['file']
+
+        # Read the content of the file
+        file_content = uploaded_file.read().decode('utf-8')
+
+        # Update the corpus based on the file content
+        tokenizer.train(file_content)
+
+        return jsonify({'message': 'Corpus updated successfully'}), 200
+    except Exception as e:
+        print(f"Error uploading file: {str(e)}")
+        return jsonify({'error': 'Failed to update corpus'}), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)
