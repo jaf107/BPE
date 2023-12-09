@@ -1,0 +1,53 @@
+<!-- templates/update_corpus.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- ... (your existing head content) ... -->
+  </head>
+  <body>
+    <header>
+      <h1>BPE Playground</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/update-corpus">Update Corpus</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div id="button-container">
+      <button id="update-corpus-button">Update Corpus</button>
+    </div>
+
+    <div id="editor-container">
+      <textarea id="editor" placeholder="Enter corpus here..."></textarea>
+    </div>
+
+    <footer>&copy; 2023 BPE Playground. All rights reserved.</footer>
+
+    <script>
+      document
+        .getElementById("update-corpus-button")
+        .addEventListener("click", function () {
+          updateCorpus();
+        });
+
+      function updateCorpus() {
+        // Get the corpus from the editor
+        var corpus = document.getElementById("editor").value;
+
+        // Send the corpus to the server (you need to implement this endpoint in your Flask app)
+        fetch("/update_corpus_action", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ corpus: corpus }),
+        })
+          .then((response) => response.json())
+          .then((data) => console.log(data))
+          .catch((error) => console.error("Error:", error));
+      }
+    </script>
+  </body>
+</html>

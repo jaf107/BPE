@@ -86,6 +86,12 @@
   <body>
     <header>
       <h1>BPE Playground</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/update-corpus">Update Corpus</a></li>
+        </ul>
+      </nav>
     </header>
 
     <div id="button-container">
@@ -102,8 +108,19 @@
     </div>
 
     <div id="editor-container">
-      <textarea id="editor" placeholder="Enter your code here..."></textarea>
-      <div id="output-container"></div>
+      <!-- <textarea
+        id="code-input"
+        placeholder="Enter your code here..."
+      ></textarea>
+      <div id="output-container"></div> -->
+      <div>
+        <label for="code-input">Input Code:</label>
+        <textarea id="code-input" rows="10" cols="50"></textarea>
+      </div>
+      <div>
+        <label for="output">Tokenized Output:</label>
+        <textarea id="output" rows="10" cols="50" readonly></textarea>
+      </div>
     </div>
 
     <footer>&copy; 2023 BPE Playground. All rights reserved.</footer>
@@ -112,27 +129,24 @@
       document
         .getElementById("run-button")
         .addEventListener("click", function () {
-          runCode();
+          tokenize();
         });
 
-      function runCode() {
-        // Get the code from the editor
-        var code = document.getElementById("editor").value;
-
-        // Clear previous output
-        document.getElementById("output-container").innerHTML = "";
-
-        try {
-          // Execute the code
-          var result = eval(code);
-
-          // Display the result in the output container
-          document.getElementById("output-container").innerHTML = result;
-        } catch (error) {
-          // Display error message
-          document.getElementById("output-container").innerHTML =
-            '<span style="color: red;">Error: ' + error.message + "</span>";
-        }
+      function tokenize() {
+        const codeInput = document.getElementById("code-input").value;
+        fetch("/tokenize", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text: codeInput }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const outputTextarea = document.getElementById("output");
+            outputTextarea.value = data.tokenized_output;
+          })
+          .catch((error) => console.error("Error:", error));
       }
     </script>
   </body>
