@@ -8,7 +8,6 @@ default_corpus = ""
 with open("corpus.txt", "r") as file:
     default_corpus = file.read()
 
-
 tokenizer.train(default_corpus)
 
 

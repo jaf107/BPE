@@ -1,153 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BPE Playground</title>
-    <style>
-      body {
-        font-family: "Arial", sans-serif;
-        margin: 0;
-        padding: 20px; /* Add padding on both sides */
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        overflow: hidden;
-      }
+{% extends 'base.html' %} {% block title %}BPE Playground{% endblock %} {% block
+content %}
+<header class="bg-dark text-white text-center py-3">
+  <h1 class="mb-0">BPE Playground</h1>
+  <nav>
+    <ul class="list-unstyled d-flex justify-content-center">
+      <li class="mr-3"><a href="/" class="text-white">Home</a></li>
+      <li><a href="/update-corpus" class="text-white">Update Corpus</a></li>
+    </ul>
+  </nav>
+</header>
 
-      header {
-        text-align: center;
-        padding: 10px;
-        background-color: #333;
-        color: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
+<div class="container my-4">
+  <div class="text-center mb-4">
+    <button id="run-button" class="btn btn-success">Run</button>
+  </div>
 
-      #button-container {
-        text-align: center;
-        margin: 20px;
-      }
-
-      #run-button {
-        margin-right: 10px; /* Add space between buttons */
-        padding: 10px;
-        font-size: 16px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        /* display: flex; */
-        align-items: center;
-      }
-      #run-icon {
-        fill: white;
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
-      }
-      #editor-container {
-        display: flex;
-        flex: 1;
-        margin-bottom: 20px; /* Add space between input and output */
-      }
-
-      #editor {
-        flex: 1;
-        height: 100%;
-        box-sizing: border-box;
-        border: none;
-        padding: 20px;
-        font-size: 16px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      #output-container {
-        flex: 1;
-        margin-left: 20px; /* Add space between input and output */
-        background-color: #f4f4f4;
-        overflow-y: auto;
-        padding: 20px;
-        box-sizing: border-box;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      footer {
-        text-align: center;
-        padding: 10px;
-        background-color: #333;
-        color: white;
-        margin-top: 20px;
-        box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>BPE Playground</h1>
-      <nav>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/update-corpus">Update Corpus</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    <div id="button-container">
-      <button id="run-button">
-        <!-- <svg
-          id="run-icon"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-        >
-          <path d="M3 22v-20l18 10-18 10z" />
-        </svg> -->
-        Run
-      </button>
-    </div>
-
-    <div id="editor-container">
-      <!-- <textarea
+  <div class="row">
+    <div class="col-md-6">
+      <label for="code-input">Input Code:</label>
+      <textarea
         id="code-input"
-        placeholder="Enter your code here..."
+        class="form-control"
+        rows="10"
+        cols="50"
       ></textarea>
-      <div id="output-container"></div> -->
-      <div>
-        <label for="code-input">Input Code:</label>
-        <textarea id="code-input" rows="10" cols="50"></textarea>
-      </div>
-      <div>
-        <label for="output">Tokenized Output:</label>
-        <textarea id="output" rows="10" cols="50" readonly></textarea>
-      </div>
     </div>
+    <div class="col-md-6">
+      <label for="output">Tokenized Output:</label>
+      <textarea
+        id="output"
+        class="form-control"
+        rows="10"
+        cols="50"
+        readonly
+      ></textarea>
+    </div>
+  </div>
+</div>
 
-    <footer>&copy; 2023 BPE Playground. All rights reserved.</footer>
+<footer class="bg-dark text-white text-center py-3 mt-4">
+  &copy; 2023 BPE Playground. All rights reserved.
+</footer>
 
-    <script>
-      document
-        .getElementById("run-button")
-        .addEventListener("click", function () {
-          tokenize();
-        });
+<script>
+  document.getElementById("run-button").addEventListener("click", function () {
+    tokenize();
+  });
 
-      function tokenize() {
-        const codeInput = document.getElementById("code-input").value;
-        fetch("/tokenize", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ text: codeInput }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            const outputTextarea = document.getElementById("output");
-            outputTextarea.value = data.tokenized_output;
-          })
-          .catch((error) => console.error("Error:", error));
-      }
-    </script>
-  </body>
-</html>
+  function tokenize() {
+    const codeInput = document.getElementById("code-input").value;
+    fetch("/tokenize", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: codeInput }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const outputTextarea = document.getElementById("output");
+        outputTextarea.value = data.tokenized_output;
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+</script>
+{% endblock %}
