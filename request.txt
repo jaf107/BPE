@@ -5,5 +5,5 @@ http://127.0.0.1:5000/update_corpus
 
 http://127.0.0.1:5000/tokenize
 {
-    "text": " def SubtractThreeNums(m,a, b, c): return m - a - b - c"
+    "text": "def SubtractThreeNums(m,a, b, c): return m - a - b - c"
 }

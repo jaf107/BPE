@@ -1,0 +1,31 @@
+a {
+  text-decoration: none;
+  padding: 10px;
+  margin-top: 10px;
+  color: #333; /* Set the default color */
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+a:hover {
+  color: #4caf50; /* Change the color on hover */
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Set minimum height to 100% of the viewport height */
+  margin: 0; /* Remove default margin */
+}
+
+.wrapper {
+  flex: 1;
+  padding: 20px;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  margin-top: auto; /* Push the footer to the bottom */
+}

@@ -25,7 +25,7 @@ endblock %} {% block content %}
         id="editor"
         class="form-control"
         placeholder="Enter corpus here..."
-        rows="10"
+        rows="15"
       ></textarea>
     </div>
   </div>
@@ -34,7 +34,6 @@ endblock %} {% block content %}
 <footer class="bg-dark text-white text-center py-3 mt-4">
   &copy; 2023 BPE Playground. All rights reserved.
 </footer>
-
 <!-- Success Modal -->
 <div class="modal" id="successModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
@@ -66,61 +65,62 @@ endblock %} {% block content %}
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Error!</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
+        <button type="button" class="close" onclick="">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
-        There was an error updating the corpus. Please try again.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">
-          Close
-        </button>
+        <div class="modal-body">
+          There was an error updating the corpus. Please try again.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
+            Close
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  document
-    .getElementById("update-corpus-button")
-    .addEventListener("click", function () {
-      updateCorpus();
-    });
-
-  function updateCorpus() {
-    // Get the corpus from the editor
-    var corpus = document.getElementById("editor").value;
-
-    // Send the corpus to the server (you need to implement this endpoint in your Flask app)
-    fetch("/update_corpus_action", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ corpus: corpus }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message) {
-          // Show success modal
-          $("#successModal").modal("show");
-        } else {
-          // Show error modal
-          $("#errorModal").modal("show");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        // Show error modal in case of a fetch error
-        $("#errorModal").modal("show");
+  <script>
+    document
+      .getElementById("update-corpus-button")
+      .addEventListener("click", function () {
+        updateCorpus();
       });
-  }
-</script>
-{% endblock %}
+
+    function updateCorpus() {
+      // Get the corpus from the editor
+      var corpus = document.getElementById("editor").value;
+
+      if (!corpus.trim()) {
+        // Show error modal for empty corpus
+        $("#errorModal").modal("show");
+        return; // Stop execution if corpus is empty
+      }
+
+      // Send the corpus to the server (you need to implement this endpoint in your Flask app)
+      fetch("/update_corpus_action", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ corpus: corpus }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message) {
+            // Show success modal
+            $("#successModal").modal("show");
+          } else {
+            // Show error modal
+            $("#errorModal").modal("show");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Show error modal in case of a fetch error
+          $("#errorModal").modal("show");
+        });
+    }
+  </script>
+  {% endblock %}
+</div>

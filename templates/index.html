@@ -21,8 +21,8 @@ content %}
       <textarea
         id="code-input"
         class="form-control"
-        rows="10"
-        cols="50"
+        rows="15"
+        cols="40"
       ></textarea>
     </div>
     <div class="col-md-6">
@@ -30,7 +30,7 @@ content %}
       <textarea
         id="output"
         class="form-control"
-        rows="10"
+        rows="15"
         cols="50"
         readonly
       ></textarea>
@@ -42,6 +42,31 @@ content %}
   &copy; 2023 BPE Playground. All rights reserved.
 </footer>
 
+<!-- <script>
+  // Function to update rows and cols based on screen size
+  function updateTextAreaSize() {
+    // Get the window height and width
+    var windowHeight = $(window).height();
+    var windowWidth = $(window).width();
+
+    // Calculate rows and cols based on your preferences
+    var rows = Math.floor(windowHeight / 40); // Adjust the divisor as needed
+    var cols = Math.floor(windowWidth / 20); // Adjust the divisor as needed
+
+    // Set the rows and cols for the textareas
+    $("#code-input").attr("rows", rows);
+    $("#code-input").attr("cols", cols);
+
+    $("#output").attr("rows", rows);
+    $("#output").attr("cols", cols);
+  }
+
+  // Call the function on window resize and initially
+  $(window).on("resize", updateTextAreaSize);
+  $(document).ready(function () {
+    updateTextAreaSize();
+  });
+</script> -->
 <script>
   document.getElementById("run-button").addEventListener("click", function () {
     tokenize();
