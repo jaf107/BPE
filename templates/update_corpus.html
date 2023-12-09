@@ -2,7 +2,7 @@
 {% extends 'base.html' %} {% block title %}Update Corpus - BPE Playground{%
 endblock %} {% block content %}
 <header class="bg-dark text-white text-center py-3">
-  <h1 class="mb-0">BPE Playground</h1>
+  <h1 class="mb-1">BPE Playground</h1>
   <nav>
     <ul class="list-unstyled d-flex justify-content-center">
       <li class="mr-3"><a href="/" class="text-white">Home</a></li>
@@ -13,7 +13,18 @@ endblock %} {% block content %}
 
 <div class="container my-4">
   <div class="text-center mb-4">
-    <button id="update-corpus-button" class="btn btn-primary">
+    <button
+      id="check-current-corpus-button"
+      class="btn btn-primary"
+      onclick="getCorpus()"
+    >
+      Check Current Corpus
+    </button>
+    <button
+      id="update-corpus-button"
+      class="btn btn-primary"
+      onclick="updateCorpus()"
+    >
       Update Corpus
     </button>
   </div>
@@ -34,6 +45,39 @@ endblock %} {% block content %}
 <footer class="bg-dark text-white text-center py-3 mt-4">
   &copy; 2023 BPE Playground. All rights reserved.
 </footer>
+<!-- Corpus Modal -->
+<div class="modal" id="corpusModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Current Corpus Text</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          onclick="toggleCorpusModal()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="corpusModalBody">
+        <!-- Corpus text will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-dismiss="modal"
+          onclick="toggleCorpusModal()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Success Modal -->
 <div class="modal" id="successModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
@@ -45,13 +89,19 @@ endblock %} {% block content %}
           class="close"
           data-dismiss="modal"
           aria-label="Close"
+          onclick="toggleSuccessModal()"
         >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">Corpus updated successfully.</div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-dismiss="modal"
+          onclick="toggleSuccessModal()"
+        >
           Close
         </button>
       </div>
@@ -65,14 +115,19 @@ endblock %} {% block content %}
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Error!</h5>
-        <button type="button" class="close" onclick="">
+        <button type="button" class="close" onclick="toggleErrorModal()">
           <span aria-hidden="true">&times;</span>
         </button>
         <div class="modal-body">
           There was an error updating the corpus. Please try again.
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-dismiss="modal"
+            onclick="toggleErrorModal()"
+          >
             Close
           </button>
         </div>
@@ -81,23 +136,47 @@ endblock %} {% block content %}
   </div>
 
   <script>
-    document
-      .getElementById("update-corpus-button")
-      .addEventListener("click", function () {
-        updateCorpus();
-      });
+    function toggleCorpusModal() {
+      $("#corpusModal").modal("toggle");
+    }
 
+    function toggleSuccessModal() {
+      $("#successModal").modal("toggle");
+    }
+
+    function toggleErrorModal() {
+      $("#errorModal").modal("toggle");
+    }
+    function getCorpus() {
+      fetch("/get_corpus", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.original_text) {
+            $("#corpusModalBody").text(data.original_text);
+            toggleCorpusModal();
+          } else {
+            toggleErrorModal();
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toggleErrorModal();
+        });
+    }
     function updateCorpus() {
-      // Get the corpus from the editor
       var corpus = document.getElementById("editor").value;
 
       if (!corpus.trim()) {
-        // Show error modal for empty corpus
-        $("#errorModal").modal("show");
-        return; // Stop execution if corpus is empty
+        toggleErrorModal();
+
+        return;
       }
 
-      // Send the corpus to the server (you need to implement this endpoint in your Flask app)
       fetch("/update_corpus_action", {
         method: "POST",
         headers: {
@@ -108,17 +187,14 @@ endblock %} {% block content %}
         .then((response) => response.json())
         .then((data) => {
           if (data.message) {
-            // Show success modal
-            $("#successModal").modal("show");
+            toggleSuccessModal();
           } else {
-            // Show error modal
-            $("#errorModal").modal("show");
+            toggleErrorModal();
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          // Show error modal in case of a fetch error
-          $("#errorModal").modal("show");
+          toggleErrorModal();
         });
     }
   </script>

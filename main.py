@@ -43,5 +43,11 @@ def tokenize():
         return jsonify({'error': 'Missing text parameter'}), 400
 
 
+@app.route('/get_corpus', methods=['GET'])
+def get_corpus_text():
+    corpus_text = tokenizer.get_corpus_text()
+    return jsonify({'original_text': corpus_text['original_text']}), 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)

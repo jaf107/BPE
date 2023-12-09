@@ -9,6 +9,7 @@ class BpeTokenizer:
         self.tokenizer = AutoTokenizer.from_pretrained("gpt2")
         self.sanitizer = CodeSanitizer()
         self.merges = None
+        self.corpusText = ""
 
     def _pre_tokenize(self, input_code):
         corpus = []
@@ -90,6 +91,7 @@ class BpeTokenizer:
         return tokens
 
     def train(self, input_code):
+        self.corpusText = input_code
         sanitized_tokens = self.sanitizer.sanitize_code(input_code)
         word_freqs = self._pre_tokenize(input_code)
 
@@ -108,6 +110,11 @@ class BpeTokenizer:
             raise ValueError(
                 "Tokenizer has not been trained. Call 'train' method first.")
         return self._tokenize(text)
+
+    def get_corpus_text(self):
+        return {
+            "original_text": self.corpusText
+        }
 
 
 # Example usage:

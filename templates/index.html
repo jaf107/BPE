@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block title %}BPE Playground{% endblock %} {% block
 content %}
 <header class="bg-dark text-white text-center py-3">
-  <h1 class="mb-0">BPE Playground</h1>
+  <h1 class="mb-1">BPE Playground</h1>
   <nav>
     <ul class="list-unstyled d-flex justify-content-center">
       <li class="mr-3"><a href="/" class="text-white">Home</a></li>
@@ -12,7 +12,9 @@ content %}
 
 <div class="container my-4">
   <div class="text-center mb-4">
-    <button id="run-button" class="btn btn-success">Run</button>
+    <button id="run-button" class="btn btn-success" onclick="tokenize()">
+      Run
+    </button>
   </div>
 
   <div class="row">
@@ -41,37 +43,7 @@ content %}
 <footer class="bg-dark text-white text-center py-3 mt-4">
   &copy; 2023 BPE Playground. All rights reserved.
 </footer>
-
-<!-- <script>
-  // Function to update rows and cols based on screen size
-  function updateTextAreaSize() {
-    // Get the window height and width
-    var windowHeight = $(window).height();
-    var windowWidth = $(window).width();
-
-    // Calculate rows and cols based on your preferences
-    var rows = Math.floor(windowHeight / 40); // Adjust the divisor as needed
-    var cols = Math.floor(windowWidth / 20); // Adjust the divisor as needed
-
-    // Set the rows and cols for the textareas
-    $("#code-input").attr("rows", rows);
-    $("#code-input").attr("cols", cols);
-
-    $("#output").attr("rows", rows);
-    $("#output").attr("cols", cols);
-  }
-
-  // Call the function on window resize and initially
-  $(window).on("resize", updateTextAreaSize);
-  $(document).ready(function () {
-    updateTextAreaSize();
-  });
-</script> -->
 <script>
-  document.getElementById("run-button").addEventListener("click", function () {
-    tokenize();
-  });
-
   function tokenize() {
     const codeInput = document.getElementById("code-input").value;
     fetch("/tokenize", {

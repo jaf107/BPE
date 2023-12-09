@@ -14,3 +14,4 @@ def SubtractThreeNums(m,a, b, c):
     return m - a - b - c
 """)
 print(result)
+print(tokenizer.get_corpus_text())
