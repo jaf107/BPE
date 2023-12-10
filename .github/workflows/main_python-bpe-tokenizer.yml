@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'production'
+      name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
@@ -65,5 +65,5 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'python-bpe-tokenizer'
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_f084b47c72c94e0b9a02a1ecdf2fe4ab }}
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_058586980E6740218F8467FAFF498D04 }}
