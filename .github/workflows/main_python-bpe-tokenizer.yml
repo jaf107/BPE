@@ -59,6 +59,9 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: "Start Flask App"
+        run: python main.py
+
       - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
@@ -66,5 +69,4 @@ jobs:
           app-name: "python-bpe-tokenizer"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_058586980E6740218F8467FAFF498D04 }}
-      - name: "Start Flask App"
-        run: python main.py
+      
