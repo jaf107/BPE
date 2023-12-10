@@ -1,2 +1,2 @@
 transformers==4.35.2
-flask==2.1.0
+flask==2.0.2
