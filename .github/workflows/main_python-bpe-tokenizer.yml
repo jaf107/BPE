@@ -59,6 +59,9 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       - name: "Start Flask App"
         run: python main.py
 
@@ -69,4 +72,3 @@ jobs:
           app-name: "python-bpe-tokenizer"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_058586980E6740218F8467FAFF498D04 }}
-      
