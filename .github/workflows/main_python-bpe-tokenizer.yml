@@ -62,8 +62,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: "Start Flask App"
-        run: python main.py
+      # - name: "Start Flask App"
+      #   run: python main.py
 
       - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v2
