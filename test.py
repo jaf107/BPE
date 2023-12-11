@@ -1,27 +1,35 @@
 from bpe_tokenizer import BpeTokenizer
 import os
 
-tokenizer = BpeTokenizer(20000)
-# tokenizer.train("""
-# def SubtractThreeNums(a, b, c):
+default_corpus = ""
+# default_corpus = """
+# def addThreeNums(a, b, c):
 #     return a + b + c
 # def multiply_three_nums(a,b,c):
 #     return a*b*c
 # def SubtractFromTheFirst(a,b):
 #     return a-b
-# """)
-file_path = os.path.join("dataset", "test.txt")
-
-default_corpus = ""
-with open(file_path, "r", encoding="ISO-8859-1") as file:
-    default_corpus = file.readlines()
-# print(len(default_corpus))
+# """
+default_corpus = """
+    This is the Hugging Face Course.
+    This chapter is about tokenization.
+    This section shows several tokenizer algorithms.
+    Hopefully, you will be able to understand how they are trained and generate tokens.
+"""
+tokenizer = BpeTokenizer(20000)
 
 tokenizer.train(default_corpus)
 
+# file_path = os.path.join("dataset", "test.txt")
+
+# with open(file_path, "r", encoding="ISO-8859-1") as file:
+#     default_corpus = file.readlines()
+# # print(len(default_corpus))
+
+# tokenizer.train(default_corpus)
+
 result = tokenizer.tokenize("""
-def addThreeNums(a, b, c):
-    return a + b + c
+This is not a token.
 """)
 # print(result)
 vocab = tokenizer.get_vocab()['vocab']

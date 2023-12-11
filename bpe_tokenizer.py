@@ -15,19 +15,19 @@ class BpeTokenizer:
         self.sanitized_tokens = []
         self.word_freqs = defaultdict(int)
 
-    def _pre_tokenize(self, input_code):
+    def _pre_tokenize(self, input):
         corpus = []
 
-        if isinstance(input_code, str):
-            sanitized_tokens = self.sanitizer.sanitize_code(input_code)
+        if isinstance(input, str):
+            sanitized_tokens = self.sanitizer.sanitize_code(input)
             for token_type, token_value in sanitized_tokens:
                 modified_token = 'Ġ' + token_value
                 corpus.append(modified_token)
                 tokens = self.sanitizer.tokenize_based_on_case(token_value)
                 if tokens:
                     corpus.extend(tokens)
-        elif isinstance(input_code, list):
-            for code_segment in input_code:
+        elif isinstance(input, list):
+            for code_segment in input:
                 sanitized_tokens = self.sanitizer.sanitize_code(code_segment)
                 for token_type, token_value in sanitized_tokens:
                     modified_token = 'Ġ' + token_value
@@ -39,7 +39,7 @@ class BpeTokenizer:
             raise ValueError(
                 "Unsupported input type. Use either string or list.")
 
-        sanitized_tokens = self.sanitizer.sanitize_code(input_code)
+        sanitized_tokens = self.sanitizer.sanitize_code(input)
         self.sanitized_tokens = sanitized_tokens
         word_freqs = defaultdict(int)
 
@@ -120,10 +120,10 @@ class BpeTokenizer:
             token) for token in tokens]
         return tokens
 
-    def train(self, input_code):
-        self.corpusText = input_code
-        sanitized_tokens = self.sanitizer.sanitize_code(input_code)
-        word_freqs = self._pre_tokenize(input_code)
+    def train(self, input):
+        self.corpusText = input
+        sanitized_tokens = self.sanitizer.sanitize_code(input)
+        word_freqs = self._pre_tokenize(input)
 
         alphabet = []
         for word in word_freqs.keys():
