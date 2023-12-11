@@ -1,7 +1,7 @@
 from bpe_tokenizer import BpeTokenizer
 import os
 
-tokenizer = BpeTokenizer()
+tokenizer = BpeTokenizer(20000)
 # tokenizer.train("""
 # def SubtractThreeNums(a, b, c):
 #     return a + b + c
@@ -10,20 +10,21 @@ tokenizer = BpeTokenizer()
 # def SubtractFromTheFirst(a,b):
 #     return a-b
 # """)
-file_path = os.path.join("dataset", "test_run.txt")
+file_path = os.path.join("dataset", "test.txt")
 
 default_corpus = ""
-with open(file_path, "r", encoding="utf-8") as file:
-    default_corpus = file.read()
+with open(file_path, "r", encoding="ISO-8859-1") as file:
+    default_corpus = file.readlines()
+# print(len(default_corpus))
 
 tokenizer.train(default_corpus)
 
 result = tokenizer.tokenize("""
-def SubtractThreeNums(m,a, b, c):
-    return m - a - b - c
+def addThreeNums(a, b, c):
+    return a + b + c
 """)
 # print(result)
 vocab = tokenizer.get_vocab()['vocab']
 vocab_size = tokenizer.get_vocab()['vocab_size']
-
+print(vocab_size)
 print(result)

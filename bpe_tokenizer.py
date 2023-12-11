@@ -12,10 +12,35 @@ class BpeTokenizer:
         self.merges = None
         self.corpusText = ""
         self.vocab = []
+        self.sanitized_tokens = []
+        self.word_freqs = defaultdict(int)
 
     def _pre_tokenize(self, input_code):
         corpus = []
+
+        if isinstance(input_code, str):
+            sanitized_tokens = self.sanitizer.sanitize_code(input_code)
+            for token_type, token_value in sanitized_tokens:
+                modified_token = 'Ġ' + token_value
+                corpus.append(modified_token)
+                tokens = self.sanitizer.tokenize_based_on_case(token_value)
+                if tokens:
+                    corpus.extend(tokens)
+        elif isinstance(input_code, list):
+            for code_segment in input_code:
+                sanitized_tokens = self.sanitizer.sanitize_code(code_segment)
+                for token_type, token_value in sanitized_tokens:
+                    modified_token = 'Ġ' + token_value
+                    corpus.append(modified_token)
+                    tokens = self.sanitizer.tokenize_based_on_case(token_value)
+                    if tokens:
+                        corpus.extend(tokens)
+        else:
+            raise ValueError(
+                "Unsupported input type. Use either string or list.")
+
         sanitized_tokens = self.sanitizer.sanitize_code(input_code)
+        self.sanitized_tokens = sanitized_tokens
         word_freqs = defaultdict(int)
 
         for token_type, token_value in sanitized_tokens:
@@ -26,6 +51,8 @@ class BpeTokenizer:
                 corpus.extend(tokens)
         for word in corpus:
             word_freqs[word] += 1
+
+        self.word_freqs = word_freqs
         return word_freqs
 
     def _compute_pair_freqs(self, splits, word_freqs):
@@ -128,6 +155,11 @@ class BpeTokenizer:
         return {
             "vocab": self.vocab,
             "vocab_size": len(self.vocab)
+        }
+
+    def get_merges_list(self):
+        return {
+            "merge": self.merges
         }
 
 

@@ -16,20 +16,45 @@ class CodeSanitizer:
             tokenize.OP: 'OPERATOR',
             tokenize.ERRORTOKEN: 'ERRORTOKEN',
         }
-
+    
     def sanitize_code(self, code):
         sanitized_tokens = []
-        code_bytes = code.encode('utf-8')
-        token_generator = tokenize.tokenize(BytesIO(code_bytes).readline)
-        allowed_token_types = {tokenize.NAME,
-                               tokenize.NUMBER, tokenize.STRING, tokenize.OP}
+
+        if isinstance(code, str):
+            # Handle string input
+            code_bytes = code.encode('utf-8')
+            token_generator = tokenize.tokenize(BytesIO(code_bytes).readline)
+        elif isinstance(code, list):
+            # Handle list input
+            code_bytes = [segment.encode('utf-8') for segment in code]
+            code_bytes = b'\n'.join(code_bytes)
+            token_generator = tokenize.tokenize(BytesIO(code_bytes).readline)
+        else:
+            raise ValueError("Unsupported input type. Use either string or list.")
+
+        allowed_token_types = {tokenize.NAME, tokenize.NUMBER, tokenize.STRING, tokenize.OP}
         for token in token_generator:
             token_type = token.type
             if token_type in allowed_token_types:
                 token_value = token.string
-                sanitized_tokens.append(
-                    (self.token_type_names.get(token_type, 'UNK'), token_value))
+                sanitized_tokens.append((self.token_type_names.get(token_type, 'UNK'), token_value))
+
         return sanitized_tokens
+
+
+    # def sanitize_code(self, code):
+    #     sanitized_tokens = []
+    #     code_bytes = code.encode('utf-8')
+    #     token_generator = tokenize.tokenize(BytesIO(code_bytes).readline)
+    #     allowed_token_types = {tokenize.NAME,
+    #                            tokenize.NUMBER, tokenize.STRING, tokenize.OP}
+    #     for token in token_generator:
+    #         token_type = token.type
+    #         if token_type in allowed_token_types:
+    #             token_value = token.string
+    #             sanitized_tokens.append(
+    #                 (self.token_type_names.get(token_type, 'UNK'), token_value))
+    #     return sanitized_tokens
 
     def is_camel_case(self, input_string):
         return re.match(r'^[a-z]+(?:[A-Z][a-z]*)*$', input_string) is not None
