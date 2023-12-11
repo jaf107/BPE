@@ -40,12 +40,48 @@ content %}
   </div>
 </div>
 
+<!-- Error Modal -->
+<div class="modal" id="errorModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Error!</h5>
+        <button type="button" class="close" onclick="toggleErrorModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-body">
+          There was an error updating the corpus. Please try again.
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-dismiss="modal"
+            onclick="toggleErrorModal()"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer class="bg-dark text-white text-center py-3 mt-4">
   &copy; 2023 BPE Playground. All rights reserved.
 </footer>
 <script>
+  function toggleErrorModal() {
+    $("#errorModal").modal("toggle");
+  }
   function tokenize() {
     const codeInput = document.getElementById("code-input").value;
+
+    if (!codeInput.trim()) {
+      toggleErrorModal();
+
+      return;
+    }
     fetch("/tokenize", {
       method: "POST",
       headers: {

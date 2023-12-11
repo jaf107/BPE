@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify, render_template
 from bpe_tokenizer import BpeTokenizer
-
+import os
+file_path = os.path.join("dataset", "train.txt")
 app = Flask(__name__)
 tokenizer = BpeTokenizer()
 
 default_corpus = ""
-with open("corpus.txt", "r") as file:
+with open(file_path, "r", encoding="utf-8") as file:
     default_corpus = file.read()
 
 tokenizer.train(default_corpus)

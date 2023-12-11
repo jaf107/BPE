@@ -1,6 +1,7 @@
 from collections import defaultdict
 from transformers import AutoTokenizer
 from sanitizer import CodeSanitizer
+from tqdm import tqdm
 
 
 class BpeTokenizer:
@@ -10,6 +11,7 @@ class BpeTokenizer:
         self.sanitizer = CodeSanitizer()
         self.merges = None
         self.corpusText = ""
+        self.vocab = []
 
     def _pre_tokenize(self, input_code):
         corpus = []
@@ -37,7 +39,7 @@ class BpeTokenizer:
                 pair_freqs[pair] += freq
         return pair_freqs
 
-    def _merge_most_frequent_pairs(self, alphabet, word_freqs):
+    def _merge_most_frequent_pairs_with_progress(self, alphabet, word_freqs, tqdm_bar):
         def merge_pair(a, b, splits):
             for word in word_freqs:
                 split = splits[word]
@@ -65,6 +67,7 @@ class BpeTokenizer:
             splits = merge_pair(*best_pair, splits)
             merges[best_pair] = best_pair[0] + best_pair[1]
             vocab.append(best_pair[0] + best_pair[1])
+            tqdm_bar.update(1)
 
         return vocab, merges
 
@@ -102,8 +105,13 @@ class BpeTokenizer:
                     alphabet.append(letter)
         alphabet.sort()
 
-        self.vocab, self.merges = self._merge_most_frequent_pairs(
-            alphabet, word_freqs)
+        # self.vocab, self.merges = self._merge_most_frequent_pairs(
+        #     alphabet, word_freqs)
+        tqdm_bar = tqdm(total=self.vocab_size,
+                        desc="Training BPE", unit="merge")
+        self.vocab, self.merges = self._merge_most_frequent_pairs_with_progress(
+            alphabet, word_freqs, tqdm_bar)
+        tqdm_bar.close()
 
     def tokenize(self, text):
         if self.merges is None:
@@ -114,6 +122,12 @@ class BpeTokenizer:
     def get_corpus_text(self):
         return {
             "original_text": self.corpusText
+        }
+
+    def get_vocab(self):
+        return {
+            "vocab": self.vocab,
+            "vocab_size": len(self.vocab)
         }
 
 
