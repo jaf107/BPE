@@ -26,11 +26,11 @@ tokenized_text = tokenizer.tokenize("Hello, world!")
 detokenized_text = tokenizer.detokenize(tokenized_text)
 ```
 
-For more detailed examples and usage, refer to the [documentation]([#link_to_docs](https://drive.google.com/file/d/1ISfmKGE8dyLZLSashgL2AsHo4LKNK-Yd/view?usp=drive_link)).
+For more detailed examples and usage, refer to the [documentation](https://drive.google.com/file/d/1ISfmKGE8dyLZLSashgL2AsHo4LKNK-Yd/view?usp=drive_link).
 
 ## Documentation
 
-Detailed documentation is available at [link_to_docs](https://drive.google.com/file/d/1ISfmKGE8dyLZLSashgL2AsHo4LKNK-Yd/view?usp=drive_link).
+Detailed documentation is available at [link](https://drive.google.com/file/d/1ISfmKGE8dyLZLSashgL2AsHo4LKNK-Yd/view?usp=drive_link).
 
 ## BPE Playground
 
